@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../services/queue_service.dart';
+import 'package:provider/provider.dart';
+import '../providers/queue_provider.dart';
 
 class QueueStatusScreen extends StatefulWidget {
   const QueueStatusScreen({super.key});
@@ -9,32 +10,40 @@ class QueueStatusScreen extends StatefulWidget {
 }
 
 class _QueueStatusScreenState extends State<QueueStatusScreen> {
-  final QueueService _queueService = QueueService();
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<QueueProvider>(context, listen: false).loadQueue();
+  }
 
   @override
   Widget build(BuildContext context) {
-    var queue = _queueService.getQueue();
+    final provider = Provider.of<QueueProvider>(context);
     return Scaffold(
-      appBar: AppBar(title: const Text("Status Antrian")),
+      appBar: AppBar(title: const Text('Status Antrian')),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Nomor saat ini: ${queue.currentNumber}",
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            Text("Nomor terakhir: ${queue.lastNumber}",
-                style: const TextStyle(fontSize: 18)),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _queueService.nextNumber();
-                });
-              },
-              child: const Text("Panggil Nomor Berikutnya"),
-            )
-          ],
-        ),
+        child: provider.loading
+            ? const CircularProgressIndicator()
+            : provider.queue == null
+                ? Text(provider.error ?? 'Tidak ada data')
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Nomor Saat Ini', style: TextStyle(fontSize: 16)),
+                      Text('${provider.queue!.currentNumber}', style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 12),
+                      Text('Nomor Terakhir: ${provider.queue!.lastNumber}'),
+                      const SizedBox(height: 12),
+                      Text('Estimasi waktu tiap pasien: ${provider.queue!.estimatedPerPatientMinutes} menit'),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          provider.loadQueue();
+                        },
+                        child: const Text('Refresh'),
+                      ),
+                    ],
+                  ),
       ),
     );
   }
