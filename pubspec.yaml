@@ -1,0 +1,30 @@
+name: antrian_rumah_sakit
+description: Aplikasi antrian rumah sakit menggunakan Flutter
+publish_to: 'none' # biar gak dipublish ke pub.dev
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"  # sesuaikan dengan Dart SDK di PC Abu Nawas
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8   # ikon tambahan iOS
+  http: ^1.2.2              # nanti kalau mau konek ke backend Laravel
+  provider: ^6.1.2          # state management sederhana
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0     # aturan linting/penulisan kode
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/        # folder untuk gambar
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
+        - asset: assets/fonts/Roboto-Bold.ttf
+          weight: 700
